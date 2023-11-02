@@ -42,8 +42,7 @@ def transcribe(audio,):
 demo = gr.Interface(
     transcribe,
     gr.Audio(sources=["microphone"]),
-    gr.Textbox(label="Py_Transcription"),
-    gr.Textbox(label="Time taken for Transcription")
+    outputs = [gr.Textbox(label="Py_Transcription"), gr.Textbox(label="Time taken for Transcription")]
 )
 
 demo.launch()
