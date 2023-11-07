@@ -9,13 +9,16 @@ import numpy as np
 import subprocess 
 from pywhispercpp.model import Model
 
-model = Model('base.en', n_threads=6)
+# model = Model('base.en', n_threads=6,models_dir="./Models") # Only english
+# model = Model('base', n_threads=6,models_dir="./Models",language="hindi",translate=False)  # Multilingual
+model = Model('medium', n_threads=6,models_dir="./Models",language="hindi",translate=False)  # Multilingual
 
 def resample_to_16k(audio, orig_sr):
     y_resampled = librosa.resample(y=audio, orig_sr=orig_sr, target_sr = 16000)
     return y_resampled
 
-def transcribe(audio,):
+def transcribe(audio):
+    print(type(audio))
     sr,y = audio
     y = y.astype(np.float32)
     y /= np.max(np.abs(y))
@@ -41,8 +44,11 @@ def transcribe(audio,):
 
 demo = gr.Interface(
     transcribe,
-    gr.Audio(sources=["microphone"]),
-    outputs = [gr.Textbox(label="Py_Transcription"), gr.Textbox(label="Time taken for Transcription")]
+    inputs = "microphone",
+    # gr.Audio(sources=["microphone"]),
+    outputs=[gr.Textbox(label="Py_Transcription"),gr.Textbox(label="Time taken for Transcription")],
+    # examples=["./Samples/Hindi_1.mp3","./Samples/Hindi_2.mp3","./Samples/Tamil_1.mp3","./Samples/Tamil_2.mp3","./Samples/Marathi_1.mp3","./Samples/Marathi_2.mp3","./Samples/Nepal_1.mp3","./Samples/Nepal_2.mp3","./Samples/Telugu_1.wav","./Samples/Telugu_2.wav","./Samples/Malayalam_1.wav","./Samples/Malayalam_2.wav","./Samples/Gujarati_1.wav","./Samples/Gujarati_2.wav","./Samples/Bengali_1.wav","./Samples/Bengali_2.wav"]
+    examples=["./Samples/Hindi_1.mp3","./Samples/Hindi_2.mp3","./Samples/Hindi_3.mp3","./Samples/Hindi_4.mp3","./Samples/Hindi_5.mp3"] # only hindi   # ,"./Samples/Tamil_1.mp3","./Samples/Tamil_2.mp3","./Samples/Marathi_1.mp3","./Samples/Marathi_2.mp3","./Samples/Nepal_1.mp3","./Samples/Nepal_2.mp3","./Samples/Telugu_1.wav","./Samples/Telugu_2.wav","./Samples/Malayalam_1.wav","./Samples/Malayalam_2.wav","./Samples/Gujarati_1.wav","./Samples/Gujarati_2.wav","./Samples/Bengali_1.wav","./Samples/Bengali_2.wav"]
 )
 
 demo.launch()
